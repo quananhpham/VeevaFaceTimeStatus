@@ -1,0 +1,88 @@
+<script type="text/javascript" src="/soap/ajax/29.0/connection.js"></script>
+<script type="text/javascript" src="/soap/ajax/29.0/apex.js"></script>
+<script src="/resource/1366999640000/VEM__VEM_JQUERY"></script>
+<script>
+jQuery.noConflict();
+function getCookie(cname)
+{
+var name = cname + "=";
+var ca = document.cookie.split(';');
+for(var i=0; i<ca.length; i++)
+  {
+  var c = ca[i].trim();
+  if (c.indexOf(name)==0) return c.substring(name.length,c.length);
+  }
+return "";
+} 
+
+sforce.connection.sessionId = getCookie("sid");
+
+var buttonClicked = false;
+
+jQuery(document).ready(function() {
+	var availability = sforce.apex.execute("UserUtility","getFaceTimeAvailability",{});
+	if(!buttonClicked) {
+		buttonClicked = true;
+		if(availability=="true") {
+			jQuery("#availability").css("background-color","green");
+			jQuery("#facetimeText").text("Available");
+			jQuery("#theButton").val("Set Unavailable");
+		}
+		else {
+			jQuery("#availability").css("background-color","red");
+			jQuery("#facetimeText").text("Unavailable");
+			jQuery("#theButton").val("Set Available");
+		}
+	}
+});
+
+function faceTimeAvailable() {
+	var availability = sforce.apex.execute("UserUtility","getFaceTimeAvailability",{});
+	if(!buttonClicked) {
+		buttonClicked = true;
+		if(availability=="true") {
+			jQuery("#availability").css("background-color","green");
+			jQuery("#facetimeText").text("Available");
+			jQuery("#theButton").val("Set Unavailable");
+		}
+		else {
+			jQuery("#availability").css("background-color","red");
+			jQuery("#facetimeText").text("Unavailable");
+			jQuery("#theButton").val("Set Available");
+		}
+	}
+	else {
+		if(availability=="true") {
+			sforce.apex.execute("UserUtility","setFaceTimeAvailability",{availability:"false"});
+			jQuery("#availability").css("background-color","red");
+			jQuery("#facetimeText").text("Unavailable");
+			jQuery("#theButton").val("Set Available");
+		}
+		else {
+			sforce.apex.execute("UserUtility","setFaceTimeAvailability",{availability:"true"});
+			jQuery("#availability").css("background-color","green");
+			jQuery("#facetimeText").text("Available");
+			jQuery("#theButton").val("Set Unavailable");
+		}
+	}
+}
+</script>
+<table>
+<tr>
+<td align="center" valign="middle">
+<div id="availability" style="background-color:white;height:75px;width:75px;border-radius:50%;vertical-align:middle;behavior:url(PIE.htc);box-shadow: 10px 10px 5px #888888;border:2px solid;"></div>
+</td>
+</tr>
+<tr>
+<td align="center" valign="middle" border="1">
+<p id="facetimeText" style="text-align:center"></p>
+</td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+<tr>
+<td>
+<input type="button" id="theButton" onclick="faceTimeAvailable()" value="Click to Check Status"></button>
+</td>
+</tr>
+</table>
+

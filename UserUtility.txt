@@ -1,0 +1,26 @@
+global class UserUtility {
+webservice static String getFaceTimeAvailability() {
+    User u = [Select Id, Face_Time_Available__c from User where Id = :UserInfo.GetUserId()];
+    if(u.Face_Time_Available__c) {
+        return 'true';
+    }
+    else {
+        return 'false';
+    }
+}
+
+webservice static void setFaceTimeAvailability(String availability) {
+    User u = [Select Id, Face_Time_Available__c from User where Id = :UserInfo.GetUserId()];
+    system.debug('User id: ' + u.Id);
+    system.debug('Availability = ' + availability);
+    if(availability == 'true') {
+        u.Face_Time_Available__c = true;
+    }
+    else {
+        u.Face_Time_Available__c = false;
+    }
+    update u;
+    //return new PageReference(ApexPages.currentPage().getHeaders().get('Referer'));
+}
+
+}
